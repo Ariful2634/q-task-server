@@ -63,6 +63,51 @@ async function run() {
         res.send(result)
     })
 
+
+      // find
+
+      app.get('/tasks/:id', async (req, res) => {
+
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await qtaskCollection.findOne(query)
+        res.send(result)
+  
+      })
+  
+      // update
+  
+      app.put('/update/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true };
+        const updateTask = req.body;
+        const update = {
+          $set: {
+            task: updateTask.task,
+            priority: updateTask.priority,
+  
+          }
+        }
+        const result = await qtaskCollection.updateOne(filter,update,options)
+        res.send(result)
+      })
+
+
+    // for delete
+    app.delete('/task/:id', async(req,res)=>{
+        const id  = req.params.id;
+          const query ={_id: new ObjectId(id)}
+          const result = await qtaskCollection.deleteOne(query)
+          res.send(result)
+      })
+
+
+
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
